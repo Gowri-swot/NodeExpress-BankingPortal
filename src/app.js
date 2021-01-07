@@ -27,12 +27,12 @@ app.get('/savings', function(req,res) {
 
 app.get('/checking', function(req,res) {
     res.render('account', { 
-        checking: accounts.checking });
+        account: accounts.checking });
 })
 
 app.get('/credit', function(req,res) {
     res.render('account', { 
-        credit: accounts.credit });
+        account: accounts.credit });
 })
 
 app.get('/profile', function(req,res) {
