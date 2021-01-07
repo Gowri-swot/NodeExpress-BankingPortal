@@ -8,15 +8,11 @@ app.set('view engine','ejs');
 
 app.use(express.static(path.join(__dirname, '/public')));
 
-const accounts = fs.readFileSync('src/json/accounts.json', 'utf8', function(contents) {
-    const accountData = contents.toString()
-    return Json.parse(accountData)
-})
+const accountData = fs.readFileSync(path.join(__dirname, 'json', 'accounts.json'), 'utf8');
+const accounts = JSON.parse(accountData);
 
-const users = fs.readFileSync('src/json/users.json', 'utf8', function(contents) {
-    const userData = contents.toString()
-    return Json.parse(userData)
-})
+const userData = fs.readFileSync(path.join(__dirname, 'json', 'users.json'), 'utf8');
+const users = JSON.parse(userData);
 
 app.get('/', function(req,res) {
     res.render('index', { 
