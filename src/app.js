@@ -7,6 +7,7 @@ app.set('views',path.join(__dirname, '/views'));
 app.set('view engine','ejs');
 
 app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.urlencoded({ extended: true }));
 
 const accountData = fs.readFileSync(path.join(__dirname, 'json', 'accounts.json'), 'utf8');
 const accounts = JSON.parse(accountData);
@@ -41,25 +42,15 @@ app.get('/profile', function(req,res) {
 })
 
 app.get('/transfer', function(req,res) {
-    res.render('transfer', { 
-        message: "Transfer Completed" });
+    res.render('transfer');
 })
 
 app.post('/transfer', function(req,res,body) {
-    if(body.from === "checking") {
-        accounts["checking"].balance = parseInt(accounts["checking"].balance - body.amount)
-        accounts["savings"].balance = parseInt(accounts["savings"].balance + body.amount)
-    } else {
-            accounts["checking"].balance = parseInt(accounts["checking"].balance + body.amount)
-            accounts["savings"].balance = parseInt(accounts["savings"].balance - body.amount)
-        }
-       let accountsJSON = Json.stringify(accounts);
-
-    fs.writeFileSync(path.join(__dirname, "/json/accounts.json"), accountsJSON, 'UTF8', function() {
-        res.render('transfer', { 
-            message: "Transfer Completed" });
-    })
-
+    accounts[req.body.from].balance -= req.body.amount;
+    accounts[req.body.to].balance += parseInt(req.body.amount, 10);
+    let accountsJSON = JSON.stringify(accounts, null, 4)
+    fs.writeFileSync(path.join(__dirname, 'json','accounts.json'), accountsJSON, 'utf8');
+    res.render('transfer', {message: 'Transfer Completed'});
 })
 
 app.listen(3000,  () => { console.log('PS Project Running on port 3000!') });
