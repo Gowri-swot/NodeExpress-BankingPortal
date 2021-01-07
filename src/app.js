@@ -40,4 +40,26 @@ app.get('/profile', function(req,res) {
         user: users[0] });
 })
 
+app.get('/transfer', function(req,res) {
+    res.render('transfer', { 
+        message: "Transfer Completed" });
+})
+
+app.post('/transfer', function(req,res,body) {
+    if(body.from === "checking") {
+        accounts["checking"].balance = parseInt(accounts["checking"].balance - body.amount)
+        accounts["savings"].balance = parseInt(accounts["savings"].balance + body.amount)
+    } else {
+            accounts["checking"].balance = parseInt(accounts["checking"].balance + body.amount)
+            accounts["savings"].balance = parseInt(accounts["savings"].balance - body.amount)
+        }
+       let accountsJSON = Json.stringify(accounts);
+
+    fs.writeFileSync(path.join(__dirname, "/json/accounts.json"), accountsJSON, 'UTF8', function() {
+        res.render('transfer', { 
+            message: "Transfer Completed" });
+    })
+
+})
+
 app.listen(3000,  () => { console.log('PS Project Running on port 3000!') });
