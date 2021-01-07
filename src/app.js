@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express')
 const app = express();
-const data = require('./data')
+const { accounts, users, writeJSON } = require('./data.js');
 
 app.set('views',path.join(__dirname, '/views'));
 app.set('view engine','ejs');
@@ -13,27 +13,27 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/', function(req,res) {
     res.render('index', { 
         title: 'Account Summary',
-        accounts: data.accounts });
+        accounts: accounts });
 })
 
 app.get('/savings', function(req,res) {
     res.render('account', { 
-        account: data.accounts.savings });
+        account: accounts.savings });
 })
 
 app.get('/checking', function(req,res) {
     res.render('account', { 
-        account: data.accounts.checking });
+        account: accounts.checking });
 })
 
 app.get('/credit', function(req,res) {
     res.render('account', { 
-        account: data.accounts.credit });
+        account: accounts.credit });
 })
 
 app.get('/profile', function(req,res) {
     res.render('profile', { 
-        user: data.users[0] });
+        user: users[0] });
 })
 
 app.get('/transfer', function(req,res) {
@@ -41,18 +41,18 @@ app.get('/transfer', function(req,res) {
 })
 
 app.post('/transfer', function(req,res,body) {
-    data.accounts[req.body.from].balance -= req.body.amount;
-    data.accounts[req.body.to].balance += parseInt(req.body.amount, 10);
-    data.writeJSON();
+    accounts[req.body.from].balance -= req.body.amount;
+    accounts[req.body.to].balance += parseInt(req.body.amount, 10);
+    writeJSON();
     res.render('transfer', {message: 'Transfer Completed'});
 })
 
 app.get('/payment', (req, res) => res.render('payment', {account: accounts.credit}));
 
 app.post('/payment', (req, res) => {
-    data.accounts.credit.balance -= req.body.amount;
-    data.accounts.credit.available += parseInt(req.body.amount);
-
+    accounts.credit.balance -= req.body.amount;
+    accounts.credit.available += parseInt(req.body.amount);
+    writeJSON();
    res.render('payment', {message: 'Payment Successful', account: accounts.credit});
 });
 
