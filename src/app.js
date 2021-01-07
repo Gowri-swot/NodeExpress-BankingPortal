@@ -5,7 +5,7 @@ const app = express();
 const { accounts, users, writeJSON } = require('./data.js');
 
 const accountRoutes = require('./routes/accounts.js')
-const servicesRoutes =  require('./routes/service.js')
+const servicesRoutes = require('./routes/services.js')
 
 app.set('views',path.join(__dirname, '/views'));
 app.set('view engine','ejs');
